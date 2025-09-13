@@ -43,6 +43,17 @@ int	main(int argc, char *argv[], char *env[])
 	return (g_last_exit_status);
 }
 
+int	ft_is_pipe_builtin(char *cmd)
+{
+	if (!ft_strcmp(cmd, "pwd"))
+		return (1);
+	if (!ft_strcmp(cmd, "echo"))
+		return (1);
+	if (!ft_strcmp(cmd, "env"))
+		return (1);
+	return (0);
+}
+
 // THIS AND FOLLOWING CONTAIN GLOBAL VARIABLE
 void	ft_nested_sigint_handler(int sig)
 {
@@ -95,8 +106,6 @@ void	ft_change_directory(t_dat *data, size_t k)
 	}
 }
 
-// END OF GLOBAL VARIABLE
-
 void	ft_export_error(char *arg, char *message)
 {
 	write(2, "export: '", 9);
@@ -106,454 +115,6 @@ void	ft_export_error(char *arg, char *message)
 	write(2, "\n", 1);
 	// only this line is new
 	g_last_exit_status = 1;
-}
-
-void	ft_export_multi_var(t_dat *data, size_t k)
-{
-	char	*message;
-	int		i;
-
-	message = "not a valid identifier";
-	if (data->xln[k + 1] == NULL)
-	{
-		ft_print_sorted_env(data->ev);
-		return ;
-	}
-	i = 1;
-	while (data->xln[k + i] != NULL)
-	{
-		if (ft_valid_var(data->xln[k + i]) == 1)
-		{
-			ft_export_type1(&data->ev, data->xln[k + i], NULL, NULL);
-			ft_add_local_var(data, data->xln[k + i]);
-		}
-		else if (ft_var_name_only(data->xln[k + i]) == 1)
-			ft_export_type2(data, data->xln[k + i]);
-		else
-			ft_export_error(data->xln[k + i], message);
-		i++;
-	}
-}
-
-int	ft_handle_builtin(t_dat *data, size_t k)
-{
-	if (data == NULL || data->xln == NULL)
-		return (0);
-	if (ft_strcmp(data->xln[k], "pwd") == 0)
-		ft_pwd();
-	else if (ft_strcmp(data->xln[k], "cd") == 0)
-		ft_change_directory(data, k);
-	else if (ft_strcmp(data->xln[k], "echo") == 0)
-		ft_echo(data->xln, k);
-	else if (ft_strcmp(data->xln[k], "exit") == 0)
-		ft_exit(data, k);
-	else if (ft_strcmp(data->xln[k], "env") == 0)
-		ft_env(data);
-	else if (ft_strcmp(data->xln[k], "unset") == 0)
-		ft_unset_multi_var(data, k);
-	else if (ft_strcmp(data->xln[k], "export") == 0)
-		ft_export_multi_var(data, k);
-	else
-		return (0);
-	return (1);
-}
-
-void	ft_check_var_assign_and_expand_line_ext(t_dat *data, char *line)
-{
-	ft_strip_quotes_from_xln(data);
-	ft_external_functions(data, line);
-	if (data->qtypes)
-	{
-		free(data->qtypes);
-		data->qtypes = NULL;
-	}
-	ft_free_string_array(data->ln);
-	data->ln = NULL;
-	ft_free_string_array(data->xln);
-	data->xln = NULL;
-}
-
-void	ft_check_var_assign_and_expand_line(t_dat *data, char *line)
-{
-	if (!data || !line)
-		return ;
-	data->qtypes = NULL;
-	data->ln = ft_tokenize_line(data, line, &data->qtypes);
-	if (!data->ln)
-	{
-		if (data->qtypes)
-			free(data->qtypes);
-		return ;
-	}
-	data->xln = ft_expand_tokens(data, data->ln, data->qtypes, 0);
-	if (!data->xln)
-	{
-		if (data->qtypes)
-			free(data->qtypes);
-		ft_free_string_array(data->ln);
-		data->ln = NULL;
-		return ;
-	}
-	ft_check_var_assign_and_expand_line_ext(data, line);
-}
-
-int	ft_count_list(t_va *head)
-{
-	t_va	*cur;
-	int		count;
-
-	cur = head;
-	count = 0;
-	while (cur)
-	{
-		if (cur->name)
-			count++;
-		cur = cur->next;
-	}
-	return (count);
-}
-
-void	ft_list_to_env_array(t_dat *data)
-{
-	int		i;
-	int		count;
-	t_va	*cur;
-
-	i = 0;
-	data->tmp1 = NULL;
-	count = ft_count_list(data->ev);
-	data->evs = malloc((count + 1) * sizeof(char *));
-	if (!data->evs)
-		return ;
-	cur = data->ev;
-	while (cur && i < count)
-	{
-		data->tmp1 = ft_strjoin(cur->name, "=");
-		data->evs[i] = ft_strjoin(data->tmp1, cur->value);
-		free(data->tmp1);
-		data->tmp1 = NULL;
-		cur = cur->next;
-		i++;
-	}
-	data->evs[i] = NULL;
-}
-
-char	*ft_join_path(char *str1, char *cmd)
-{
-	char	*temp;
-	char	*full_path;
-
-	temp = ft_strjoin(str1, "/");
-	full_path = ft_strjoin(temp, cmd);
-	free(temp);
-	temp = NULL;
-	return (full_path);
-}
-
-char	*ft_get_cmd_path_nested(const char *cmd)
-{
-	if (access(cmd, X_OK) == 0)
-		return (ft_strdup(cmd));
-	return (NULL);
-}
-
-char	*ft_get_cmd_path(t_dat *d, const char *cmd, int i)
-{
-	char	*full;
-
-	if (!cmd || *cmd == '\0')
-		return (NULL);
-	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/'))
-		return (ft_get_cmd_path_nested(cmd));
-	d->tmp1 = ft_get_val_from_list(d->ev, "PATH");
-	if (!d->tmp1)
-		return (NULL);
-	d->avs = ft_split(d->tmp1, ':');
-	while (d->avs && d->avs[i])
-	{
-		full = ft_join_path(d->avs[i], (char *)cmd);
-		if (access(full, X_OK) == 0)
-		{
-			ft_free_string_array(d->avs);
-			return (full);
-		}
-		free(full);
-		i++;
-	}
-	ft_free_string_array(d->avs);
-	return (NULL);
-}
-
-int	ft_count_pipes(char **tokens)
-{
-	int	count;
-	int	i;
-
-	count = 0;
-	i = 0;
-	while (tokens[i])
-	{
-		if (ft_strcmp(tokens[i], "|") == 0)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-int	ft_count_redirections(char **tokens)
-{
-	int	count;
-	int	i;
-
-	count = 0;
-	i = 0;
-	while (tokens[i])
-	{
-		if (ft_is_redirection(tokens[i]))
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-void	ft_cmd_not_found(char *cmd)
-{
-	char	*prefix;
-	char	*suffix;
-
-	prefix = "minishell: ";
-	suffix = ": command not found\n";
-	write(2, prefix, ft_strlen(prefix));
-	write(2, cmd, ft_strlen(cmd));
-	write(2, suffix, ft_strlen(suffix));
-	exit(127);
-}
-
-void	ft_cmd_error(t_dat *data, char *line)
-{
-	(void)line;
-	ft_free_string_array(data->evs);
-	data->evs = NULL;
-	return ;
-}
-
-void	ft_external_functions(t_dat *data, char *line)
-{
-	char	***cmd;
-
-	(void)line;
-	if (!data || !data->xln || !data->xln[0])
-		return ;
-	if (!ft_validate_syntax(data->xln))
-		return ;
-	ft_list_to_env_array(data);
-	data->no_pipes = ft_count_pipes(data->xln);
-	if (!data->no_pipes && !ft_count_redirections(data->xln))
-	{
-		if (ft_all_valid_lvar(data, data->xln))
-			ft_update_local_variables(data);
-		if (ft_handle_builtin(data, data->st))
-			return ;
-	}
-	cmd = ft_parse_cmd(data, 0, 0, 0);
-	if (!cmd)
-		return ;
-	ft_execute_pipeline(data, cmd);
-	ft_clean_cmd(cmd);
-	ft_free_string_array(data->evs);
-	data->evs = NULL;
-}
-
-char	**ft_extract_tokens(t_dat *data, int start, int end)
-{
-	char	**tokens;
-	int		i;
-
-	tokens = malloc((end - start + 1) * sizeof(char *));
-	if (!tokens)
-		return (NULL);
-	i = 0;
-	while (start < end)
-	{
-		tokens[i] = ft_strdup(data->xln[start]);
-		if (!tokens[i])
-		{
-			ft_free_string_array(tokens);
-			return (NULL);
-		}
-		start++;
-		i++;
-	}
-	tokens[i] = NULL;
-	return (tokens);
-}
-
-char	***ft_clean_cmd(char ***cmd)
-{
-	int	i;
-
-	if (!cmd)
-		return (NULL);
-	i = 0;
-	while (cmd[i])
-	{
-		ft_free_string_array(cmd[i]);
-		i++;
-	}
-	free(cmd);
-	return (NULL);
-}
-
-int	ft_parse_cmd_helper(t_dat *d, char ***cmd, int *idx, int *st_i)
-{
-	int	i;
-
-	i = st_i[1];
-	if (i < st_i[0])
-		return (0);
-	if (!ft_validate_segment(d->xln, st_i[0], i))
-		return (0);
-	cmd[*idx] = ft_extract_tokens(d, st_i[0], i);
-	if (!cmd[*idx])
-		return (0);
-	(*idx)++;
-	st_i[0] = i + 1;
-	return (1);
-}
-
-char	***ft_parse_cmd(t_dat *d, int st, int i, int idx)
-{
-	char	***cmd;
-	int		st_i[2];
-
-	d->k = ft_count_pipes(d->xln) + 1;
-	cmd = ft_calloc(d->k + 1, sizeof(char **));
-	if (!cmd)
-		return (NULL);
-	st_i[0] = st;
-	while (1)
-	{
-		st_i[1] = i;
-		if (!d->xln[i] || !ft_strcmp(d->xln[i], "|"))
-		{
-			if (!ft_parse_cmd_helper(d, cmd, &idx, st_i))
-				return (ft_clean_cmd(cmd));
-			if (!d->xln[i])
-				break ;
-		}
-		i++;
-	}
-	cmd[idx] = NULL;
-	d->tot = idx;
-	return (cmd);
-}
-
-void	ft_free_fd(int **fd)
-{
-	int	i;
-
-	if (!fd)
-		return ;
-	i = 0;
-	while (fd[i])
-	{
-		free(fd[i]);
-		i++;
-	}
-	free(fd);
-}
-
-int	**init_fd_array(int tot)
-{
-	int	**fd;
-	int	i;
-
-	fd = malloc(sizeof(int *) * tot);
-	if (!fd)
-		return (NULL);
-	i = 0;
-	while (i < tot - 1)
-	{
-		fd[i] = malloc(sizeof(int) * 2);
-		if (!fd[i])
-		{
-			while (--i >= 0)
-				free(fd[i]);
-			free(fd);
-			return (NULL);
-		}
-		i++;
-	}
-	fd[tot - 1] = NULL;
-	return (fd);
-}
-
-int	ft_create_pipes(int **fd, int tot)
-{
-	int	i;
-
-	i = 0;
-	while (i < tot - 1)
-	{
-		if (pipe(fd[i]) == -1)
-		{
-			perror("pipe");
-			while (i-- > 0)
-				free(fd[i]);
-			free(fd);
-			return (0);
-		}
-		i++;
-	}
-	return (1);
-}
-
-void	ft_setup_io(int **fd, size_t i, size_t total)
-{
-	if (i > 0)
-		dup2(fd[i - 1][0], STDIN_FILENO);
-	if (i < total - 1)
-		dup2(fd[i][1], STDOUT_FILENO);
-}
-
-int	ft_is_builtin(char *cmd)
-{
-	if (!ft_strcmp(cmd, "pwd"))
-		return (1);
-	if (!ft_strcmp(cmd, "cd"))
-		return (1);
-	if (!ft_strcmp(cmd, "echo"))
-		return (1);
-	if (!ft_strcmp(cmd, "exit"))
-		return (1);
-	if (!ft_strcmp(cmd, "export"))
-		return (1);
-	if (!ft_strcmp(cmd, "unset"))
-		return (1);
-	if (!ft_strcmp(cmd, "env"))
-		return (1);
-	return (0);
-}
-
-int	ft_is_pipe_builtin(char *cmd)
-{
-	if (!ft_strcmp(cmd, "pwd"))
-		return (1);
-	if (!ft_strcmp(cmd, "echo"))
-		return (1);
-	if (!ft_strcmp(cmd, "env"))
-		return (1);
-	return (0);
-}
-
-void	ft_execute_builtin_in_child(t_dat *d, char **cmd)
-{
-	if (!ft_strcmp(cmd[0], "pwd"))
-		ft_pwd();
-	else if (!ft_strcmp(cmd[0], "echo"))
-		ft_echo(cmd, 0);
-	else if (!ft_strcmp(cmd[0], "env"))
-		ft_env(d);
 }
 
 void	ft_exec_command(t_dat *d, char **cmd)
@@ -580,6 +141,19 @@ void	ft_exec_command(t_dat *d, char **cmd)
 	perror("execve");
 	exit(1);
 }
+
+// END OF GLOBAL VARIABLE
+// MORE TEXT TO MAKE THIS MARKER
+// MORE OBVIOUSLY
+// APPARENTLY
+// CLEARLY
+// DISTINCTLY
+// UNMISTAKABLY
+// CONSPICUOUSLY
+// MANIFESTLY
+// PATENTLY
+// PALPABLY
+// HERE
 
 void	ft_appropriate_child_signal(char *str)
 {
