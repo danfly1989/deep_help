@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static volatile sig_atomic_t	g_last_exit_status = 0;
+// THIS AND FOLLOWING CONTAIN GLOBAL VARIABLE
 
 int	main(int argc, char *argv[], char *env[])
 {
@@ -41,25 +41,6 @@ int	main(int argc, char *argv[], char *env[])
 	}
 	ft_cleanup_data(&data);
 	return (g_last_exit_status);
-}
-
-// THIS AND FOLLOWING CONTAIN GLOBAL VARIABLE
-void	ft_nested_sigint_handler(int sig)
-{
-	(void)sig;
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_last_exit_status = 130;
-}
-
-void	ft_parent_sigint_handler(int sig)
-{
-	(void)sig;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	// rl_redisplay();
-	g_last_exit_status = 130;
 }
 
 void	ft_change_directory(t_dat *data, size_t k)
