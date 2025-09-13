@@ -4,7 +4,7 @@ LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRC_MINISHELL = \
-	src/minishell.c src/heredoc.c src/main.c src/expand.c src/util.c src/shell_lvl.c src/duplication.c src/cleanup.c
+	src/minishell.c src/heredoc.c src/main.c src/expand.c src/util.c src/shell_lvl.c src/duplication.c src/cleanup.c src/create.c src/extract.c src/sigint.c src/signals.c src/token.c src/quote.c src/merge.c src/var.c src/get.c src/env.c src/dir.c src/echo.c src/exit.c src/remove.c src/export.c src/list.c src/builtin.c src/cmd.c
 
 OBJ_MINISHELL = $(SRC_MINISHELL:.c=.o)
 

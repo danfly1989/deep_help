@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 void	ft_free_lines(t_dat *data)
 {
 	ft_free_string_array(data->ln);
@@ -81,4 +80,37 @@ void	ft_cleanup_exit(t_dat *data, int flag)
 	ft_cleanup_data(data);
 	rl_clear_history();
 	exit(flag);
+}
+
+void	ft_free_list(t_va *head)
+{
+	t_va	*tmp;
+
+	while (head != NULL)
+	{
+		tmp = head;
+		head = head->next;
+		if (tmp->name)
+			free(tmp->name);
+		if (tmp->value)
+			free(tmp->value);
+		free(tmp);
+	}
+}
+
+char	**ft_free_token_quote(char **tokens, int *quote_types)
+{
+	if (tokens)
+		free(tokens);
+	if (quote_types)
+		free(quote_types);
+	return (NULL);
+}
+
+void	*ft_free_error_expanded(char **expanded, int i)
+{
+	while (--i >= 0)
+		free(expanded[i]);
+	free(expanded);
+	return (NULL);
 }

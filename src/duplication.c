@@ -14,7 +14,7 @@
 
 t_dat	ft_duplicate_input_args(int argc, char **argv, char **env)
 {
-	t_dat data;
+	t_dat	data;
 
 	(void)argc;
 	data.av = NULL;
@@ -37,4 +37,22 @@ t_dat	ft_duplicate_input_args(int argc, char **argv, char **env)
 	data.ev = create_lst_frm_arr(env, NULL, 0, ft_create_var_node);
 	ft_increment_shlvl(&data.ev);
 	return (data);
+}
+
+t_va	*ft_duplicate_list(const t_va *head)
+{
+	const t_va *cur;
+	t_va *new_head;
+	t_va *new_tail;
+
+	cur = head;
+	new_head = NULL;
+	new_tail = NULL;
+	while (cur != NULL)
+	{
+		if (!ft_append_dup_node(cur, &new_head, &new_tail))
+			return (NULL);
+		cur = cur->next;
+	}
+	return (new_head);
 }
