@@ -123,3 +123,24 @@ void	ft_check_var_assign_and_expand_line(t_dat *data, char *line)
 	}
 	ft_check_var_assign_and_expand_line_ext(data, line);
 }
+
+char	*ft_expand_exit_status(t_dat *d, char *token)
+{
+	char	*res;
+	int		i;
+
+	(void)d;
+	i = 0;
+	res = malloc(1);
+	if (!res)
+		return (NULL);
+	res[0] = '\0';
+	while (token[i])
+	{
+		if (token[i] == '$' && token[i + 1] == '?')
+			res = append_exit_status(res, g_last_exit_status, &i);
+		else
+			res = append_char(res, token, &i);
+	}
+	return (res);
+}

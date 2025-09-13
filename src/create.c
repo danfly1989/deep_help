@@ -75,3 +75,23 @@ t_va	*ft_create_var_node(char *str)
 	}
 	return (node);
 }
+
+int	ft_create_pipes(int **fd, int tot)
+{
+	int	i;
+
+	i = 0;
+	while (i < tot - 1)
+	{
+		if (pipe(fd[i]) == -1)
+		{
+			perror("pipe");
+			while (i-- > 0)
+				free(fd[i]);
+			free(fd);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}

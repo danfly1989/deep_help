@@ -77,8 +77,8 @@ char	*ft_extract_token(char *str, t_dat *d, int *quote_type)
 
 char	*ft_extract_var_key(const char *str, size_t *i)
 {
-	size_t start;
-	char *key;
+	size_t	start;
+	char	*key;
 
 	start = *i;
 	if (str[*i] == '?')
@@ -90,4 +90,28 @@ char	*ft_extract_var_key(const char *str, size_t *i)
 		(*i)++;
 	key = ft_substr(str, start, *i - start);
 	return (key);
+}
+
+char	**ft_extract_tokens(t_dat *data, int start, int end)
+{
+	char	**tokens;
+	int		i;
+
+	tokens = malloc((end - start + 1) * sizeof(char *));
+	if (!tokens)
+		return (NULL);
+	i = 0;
+	while (start < end)
+	{
+		tokens[i] = ft_strdup(data->xln[start]);
+		if (!tokens[i])
+		{
+			ft_free_string_array(tokens);
+			return (NULL);
+		}
+		start++;
+		i++;
+	}
+	tokens[i] = NULL;
+	return (tokens);
 }

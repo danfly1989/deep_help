@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 void	ft_unset_multi_var(t_dat *d, size_t k)
 {
 	int	i;

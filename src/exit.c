@@ -21,7 +21,7 @@ void	ft_exit_numeric_error(char *arg)
 
 void	ft_exit(t_dat *data, size_t k)
 {
-	int status;
+	int	status;
 
 	if (data->xln[k + 1] && data->xln[k + 2])
 	{

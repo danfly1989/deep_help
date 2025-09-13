@@ -55,7 +55,7 @@ int	ft_get_token_end(char *str, int i)
 
 char	**ft_tokenize_line(t_dat *d, char *str, int **quote_types_out)
 {
-	char **tokens;
+	char	**tokens;
 
 	ft_reset_iterators(d);
 	d->k = ft_count_tokens(str);

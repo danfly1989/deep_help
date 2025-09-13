@@ -50,9 +50,9 @@ void	ft_sort_list_by_name(t_va **head_ref)
 
 void	ft_list_to_env_array(t_dat *data)
 {
-	int i;
-	int count;
-	t_va *cur;
+	int		i;
+	int		count;
+	t_va	*cur;
 
 	i = 0;
 	data->tmp1 = NULL;

@@ -86,3 +86,24 @@ int	ft_count_pipes(char **tokens)
 	}
 	return (count);
 }
+
+int	ft_count_redirections(char **tokens)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	while (tokens[i])
+	{
+		if (ft_is_redirection(tokens[i]))
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+int	ft_is_interactive(void)
+{
+	return (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO));
+}

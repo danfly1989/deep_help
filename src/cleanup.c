@@ -114,3 +114,59 @@ void	*ft_free_error_expanded(char **expanded, int i)
 	free(expanded);
 	return (NULL);
 }
+
+char	***ft_clean_cmd(char ***cmd)
+{
+	int	i;
+
+	if (!cmd)
+		return (NULL);
+	i = 0;
+	while (cmd[i])
+	{
+		ft_free_string_array(cmd[i]);
+		i++;
+	}
+	free(cmd);
+	return (NULL);
+}
+
+void	ft_free_fd(int **fd)
+{
+	int	i;
+
+	if (!fd)
+		return ;
+	i = 0;
+	while (fd[i])
+	{
+		free(fd[i]);
+		i++;
+	}
+	free(fd);
+}
+
+int	**init_fd_array(int tot)
+{
+	int	**fd;
+	int	i;
+
+	fd = malloc(sizeof(int *) * tot);
+	if (!fd)
+		return (NULL);
+	i = 0;
+	while (i < tot - 1)
+	{
+		fd[i] = malloc(sizeof(int) * 2);
+		if (!fd[i])
+		{
+			while (--i >= 0)
+				free(fd[i]);
+			free(fd);
+			return (NULL);
+		}
+		i++;
+	}
+	fd[tot - 1] = NULL;
+	return (fd);
+}

@@ -92,14 +92,13 @@ void	ft_export_error(char *arg, char *message)
 	write(2, "': ", 3);
 	write(2, message, ft_strlen(message));
 	write(2, "\n", 1);
-	// only this line is new
 	g_last_exit_status = 1;
 }
 
 void	ft_export_multi_var(t_dat *data, size_t k)
 {
-	char *message;
-	int i;
+	char	*message;
+	int		i;
 
 	message = "not a valid identifier";
 	if (data->xln[k + 1] == NULL)

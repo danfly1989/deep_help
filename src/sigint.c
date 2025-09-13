@@ -43,4 +43,3 @@ void	ft_child_sigint_handler(int sig)
 		exit(131);
 	}
 }
-

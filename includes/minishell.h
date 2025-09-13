@@ -27,25 +27,25 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
-// Flag to indicate we are reading a heredoc
+// Flag to indicate last exit status
 static volatile sig_atomic_t	g_last_exit_status = 0;
 
 typedef struct s_dat
 {
-	struct s_variable_node *av; // argv
-	struct s_variable_node *ev; // env
-	struct s_variable_node *lo; // local variable
-	char **ln;                  // splitted line
-	char **xln;                 // expanded splitted line
-	char *tmp1;                 // temorary storage 1
-	char *tmp2;                 // temorary storage 2
-	size_t i;                   // iterator
-	size_t j;                   // iterator
-	size_t k;                   // iterator
-	size_t tot;                 // iterator
-	size_t st;                  // start for built-in functions
-	char **avs;                 // args for external function executions
-	char **evs;                 // envs for external function executions
+	struct s_variable_node		*av;
+	struct s_variable_node		*ev;
+	struct s_variable_node		*lo;
+	char						**ln;
+	char						**xln;
+	char						*tmp1;
+	char						*tmp2;
+	size_t						i;
+	size_t						j;
+	size_t						k;
+	size_t						tot;
+	size_t						st;
+	char						**avs;
+	char						**evs;
 	int							no_pipes;
 	int							*qtypes;
 }								t_dat;
@@ -260,8 +260,7 @@ void							ft_nested_minishell(t_dat *d, char **cmd,
 									char *cmd_path);
 void							ft_nested_child(t_dat *d, char **cmd,
 									char *cmd_path, int s_stdin);
-void							ft_nested_parent(t_dat *d, pid_t pid,
-									int saved_stdin);
+void							ft_nested_parent(pid_t pid, int saved_stdin);
 void							heredoc_sigint_handler(int sig);
 void							setup_heredoc_signals(void);
 void							read_heredoc_content(int fd,
@@ -270,4 +269,6 @@ int								handle_heredoc(const char *delimiter);
 void							heredoc_child_sigint(int sig);
 void							heredoc_child(int pipe_fd[2],
 									const char *delimiter);
+int								ft_count_redirections(char **tokens);
+int								ft_is_pipe_builtin(char *cmd);
 #endif

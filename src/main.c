@@ -14,8 +14,8 @@
 
 int	main(int argc, char *argv[], char *env[])
 {
-	char *line;
-	t_dat data;
+	char	*line;
+	t_dat	data;
 
 	data = ft_duplicate_input_args(argc, argv, env);
 	ft_set_main_signals();

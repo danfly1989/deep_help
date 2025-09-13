@@ -41,9 +41,9 @@ t_dat	ft_duplicate_input_args(int argc, char **argv, char **env)
 
 t_va	*ft_duplicate_list(const t_va *head)
 {
-	const t_va *cur;
-	t_va *new_head;
-	t_va *new_tail;
+	const t_va	*cur;
+	t_va		*new_head;
+	t_va		*new_tail;
 
 	cur = head;
 	new_head = NULL;

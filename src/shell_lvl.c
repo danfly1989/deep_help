@@ -58,3 +58,25 @@ int	ft_create_shlvl(t_va **env_list)
 	*env_list = new_node;
 	return (1);
 }
+
+void	ft_nested_minishell(t_dat *d, char **cmd, char *cmd_path)
+{
+	pid_t	pid;
+	int		saved_stdin;
+
+	saved_stdin = dup(STDIN_FILENO);
+	if (saved_stdin < 0)
+	{
+		perror("dup");
+		return ;
+	}
+	ft_set_main_nested_signals();
+	pid = fork();
+	if (pid == 0)
+		ft_nested_child(d, cmd, cmd_path, saved_stdin);
+	else if (pid > 0)
+		ft_nested_parent(pid, saved_stdin);
+	else
+		perror("nesting minishell fork");
+	ft_set_main_signals();
+}

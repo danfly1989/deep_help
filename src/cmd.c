@@ -45,3 +45,24 @@ char	*ft_get_cmd_path(t_dat *d, const char *cmd, int i)
 	ft_free_string_array(d->avs);
 	return (NULL);
 }
+
+void	ft_cmd_not_found(char *cmd)
+{
+	char	*prefix;
+	char	*suffix;
+
+	prefix = "minishell: ";
+	suffix = ": command not found\n";
+	write(2, prefix, ft_strlen(prefix));
+	write(2, cmd, ft_strlen(cmd));
+	write(2, suffix, ft_strlen(suffix));
+	exit(127);
+}
+
+void	ft_cmd_error(t_dat *data, char *line)
+{
+	(void)line;
+	ft_free_string_array(data->evs);
+	data->evs = NULL;
+	return ;
+}
