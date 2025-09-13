@@ -258,4 +258,5 @@ int							handle_heredoc(const char *delimiter);
 void						heredoc_child_sigint(int sig);
 void						heredoc_child(int pipe_fd[2],
 								const char *delimiter);
+int							ft_is_pipe_builtin(char *cmd);
 #endif
