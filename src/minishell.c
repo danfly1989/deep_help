@@ -43,17 +43,6 @@ int	main(int argc, char *argv[], char *env[])
 	return (g_last_exit_status);
 }
 
-int	ft_is_pipe_builtin(char *cmd)
-{
-	if (!ft_strcmp(cmd, "pwd"))
-		return (1);
-	if (!ft_strcmp(cmd, "echo"))
-		return (1);
-	if (!ft_strcmp(cmd, "env"))
-		return (1);
-	return (0);
-}
-
 // THIS AND FOLLOWING CONTAIN GLOBAL VARIABLE
 void	ft_nested_sigint_handler(int sig)
 {
@@ -207,30 +196,6 @@ void	ft_nested_parent(t_dat *d, pid_t pid, int saved_stdin)
 	close(saved_stdin);
 }
 
-// END OF GLOBAL VARIABLE
-// MORE TEXT TO MAKE THIS MARKER
-// MORE OBVIOUSLY
-// APPARENTLY
-// CLEARLY
-// DISTINCTLY
-// UNMISTAKABLY
-// CONSPICUOUSLY
-// MANIFESTLY
-// PATENTLY
-// PALPABLY
-// HERE
-
-char	*append_exit_status(char *res, int status, int *i)
-{
-	char	*temp;
-
-	temp = ft_itoa(status);
-	res = ft_strjoin_free(res, temp);
-	free(temp);
-	*i += 2;
-	return (res);
-}
-
 char	*ft_expand_exit_status(t_dat *d, char *token)
 {
 	char	*res;
@@ -251,3 +216,16 @@ char	*ft_expand_exit_status(t_dat *d, char *token)
 	}
 	return (res);
 }
+
+// END OF GLOBAL VARIABLE
+// MORE TEXT TO MAKE THIS MARKER
+// MORE OBVIOUSLY
+// APPARENTLY
+// CLEARLY
+// DISTINCTLY
+// UNMISTAKABLY
+// CONSPICUOUSLY
+// MANIFESTLY
+// PATENTLY
+// PALPABLY
+// HERE
