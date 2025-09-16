@@ -1,34 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   merge.c                                            :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: daflynn <daflynn@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/16 11:33:20 by daflynn           #+#    #+#             */
-/*   Updated: 2025/09/16 11:33:27 by daflynn          ###   ########.fr       */
+/*   Created: 2025/09/16 11:46:28 by daflynn           #+#    #+#             */
+/*   Updated: 2025/09/16 11:46:36 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_va	*ft_merge_sorted_lists(t_va *a, t_va *b)
+void	ft_env(t_dat *data)
 {
-	t_va *result;
+	t_va	*cur;
 
-	if (a == NULL)
-		return (b);
-	else if (b == NULL)
-		return (a);
-	if (ft_strcmp(a->name, b->name) <= 0)
+	cur = data->ev;
+	while (cur != NULL)
 	{
-		result = a;
-		result->next = ft_merge_sorted_lists(a->next, b);
+		printf("%s=%s\n", cur->name, cur->value);
+		cur = cur->next;
 	}
-	else
-	{
-		result = b;
-		result->next = ft_merge_sorted_lists(a, b->next);
-	}
-	return (result);
 }
