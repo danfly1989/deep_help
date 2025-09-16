@@ -271,4 +271,5 @@ void							heredoc_child_sigint(int sig);
 void							heredoc_child(int pipe_fd[2],
 									const char *delimiter);
 int								ft_is_pipe_builtin(char *cmd);
+int								ft_count_redirections(char **tokens);
 #endif

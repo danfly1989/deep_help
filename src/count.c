@@ -49,3 +49,35 @@ int	ft_count_list(t_va *head)
 	}
 	return (count);
 }
+
+int	ft_count_pipes(char **tokens)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	while (tokens[i])
+	{
+		if (ft_strcmp(tokens[i], "|") == 0)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+int	ft_count_redirections(char **tokens)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	while (tokens[i])
+	{
+		if (ft_is_redirection(tokens[i]))
+			count++;
+		i++;
+	}
+	return (count);
+}

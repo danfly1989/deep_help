@@ -60,18 +60,6 @@ void	ft_list_to_env_array(t_dat *data)
 	data->evs[i] = NULL;
 }
 
-char	*ft_join_path(char *str1, char *cmd)
-{
-	char	*temp;
-	char	*full_path;
-
-	temp = ft_strjoin(str1, "/");
-	full_path = ft_strjoin(temp, cmd);
-	free(temp);
-	temp = NULL;
-	return (full_path);
-}
-
 char	*ft_get_cmd_path_nested(const char *cmd)
 {
 	if (access(cmd, X_OK) == 0)
@@ -104,38 +92,6 @@ char	*ft_get_cmd_path(t_dat *d, const char *cmd, int i)
 	}
 	ft_free_string_array(d->avs);
 	return (NULL);
-}
-
-int	ft_count_pipes(char **tokens)
-{
-	int	count;
-	int	i;
-
-	count = 0;
-	i = 0;
-	while (tokens[i])
-	{
-		if (ft_strcmp(tokens[i], "|") == 0)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-int	ft_count_redirections(char **tokens)
-{
-	int	count;
-	int	i;
-
-	count = 0;
-	i = 0;
-	while (tokens[i])
-	{
-		if (ft_is_redirection(tokens[i]))
-			count++;
-		i++;
-	}
-	return (count);
 }
 
 void	ft_cmd_not_found(char *cmd)
