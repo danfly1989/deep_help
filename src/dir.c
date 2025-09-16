@@ -29,8 +29,7 @@ void	ft_change_directory(t_dat *data, size_t k)
 		path = ft_get_val_from_list(data->ev, "HOME");
 		if (path == NULL)
 		{
-			write(2, "cd: HOME not set\n", 17);
-			g_last_exit_status = 1;
+			(write(2, "cd: HOME not set\n", 17), g_last_exit_status = 1);
 			return ;
 		}
 	}

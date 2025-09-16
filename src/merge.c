@@ -57,8 +57,8 @@ void	ft_append_env_var(t_dat *data, char *key, char *value)
 
 char	*ft_join_path(char *str1, char *cmd)
 {
-	char *temp;
-	char *full_path;
+	char	*temp;
+	char	*full_path;
 
 	temp = ft_strjoin(str1, "/");
 	full_path = ft_strjoin(temp, cmd);

@@ -77,6 +77,7 @@ void	ft_strip_quotes_from_xln(t_dat *d)
 		i++;
 	}
 }
+
 void	ft_detect_quote_type(char *token, int *quote_type)
 {
 	char	*eq;
@@ -102,7 +103,7 @@ void	ft_detect_quote_type(char *token, int *quote_type)
 
 int	ft_skip_quote(char *str, int i)
 {
-	char quote;
+	char	quote;
 
 	quote = str[i++];
 	while (str[i] && str[i] != quote)
