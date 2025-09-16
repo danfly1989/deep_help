@@ -20,7 +20,7 @@ void	ft_change_directory(t_dat *data, size_t k)
 	if (data->xln[k + 1] != NULL && data->xln[k + 2] != NULL)
 	{
 		(write(2, "minishell: cd: too many arguments\n", 34));
-		return (g_last_exit_status, (void)0);
+		return (g_last_exit_status = 1, (void)0);
 	}
 	oldpwd = getcwd(NULL, 0);
 	if (data->xln[k + 1] == NULL || ft_strcmp(data->xln[k + 1], "~") == 0)
