@@ -97,17 +97,23 @@ char	*ft_extract_var_value(char *str, char quote, size_t len)
 	return (val);
 }
 
-int	ft_strisspace(char *str)
+int	ft_validate_segment(char **tokens, int start, int end)
 {
 	int	i;
 
-	if (!str)
+	if (!tokens || start >= end)
 		return (0);
-	i = 0;
-	while (str[i] && str[i] != '\0')
+	i = start;
+	while (i < end)
 	{
-		if (!ft_isspace(str[i]))
-			return (0);
+		if (ft_is_redirection(tokens[i]))
+		{
+			if (i + 1 >= end || ft_is_redirection(tokens[i + 1])
+				|| !ft_strcmp(tokens[i + 1], "|"))
+			{
+				return (ft_syntax_error_msg(tokens[i + 1]));
+			}
+		}
 		i++;
 	}
 	return (1);

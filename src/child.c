@@ -45,50 +45,6 @@ void	ft_child_process(t_dat *d, char ***cmd, int **fd, size_t i)
 	ft_exec_command(d, cmd[i]);
 }
 
-int	ft_syntax_error_msg(char *token)
-{
-	char	*prefix;
-	char	*newline;
-
-	prefix = "minishell: syntax error near unexpected token `";
-	newline = "'\n";
-	if (token)
-	{
-		write(2, prefix, ft_strlen(prefix));
-		write(2, token, ft_strlen(token));
-		write(2, newline, 2);
-	}
-	else
-	{
-		write(2, prefix, ft_strlen(prefix));
-		write(2, "newline", 7);
-		write(2, newline, 2);
-	}
-	return (0);
-}
-
-int	ft_validate_segment(char **tokens, int start, int end)
-{
-	int	i;
-
-	if (!tokens || start >= end)
-		return (0);
-	i = start;
-	while (i < end)
-	{
-		if (ft_is_redirection(tokens[i]))
-		{
-			if (i + 1 >= end || ft_is_redirection(tokens[i + 1])
-				|| !ft_strcmp(tokens[i + 1], "|"))
-			{
-				return (ft_syntax_error_msg(tokens[i + 1]));
-			}
-		}
-		i++;
-	}
-	return (1);
-}
-
 void	ft_fork_children(t_dat *d, char ***cmd, int **fd)
 {
 	pid_t	pid;
@@ -131,9 +87,9 @@ void	ft_nested_child(t_dat *d, char **cmd, char *cmd_path, int s_stdin)
 // of a child (grandchild) terminating due to SIGQUIT
 void	ft_wait_children(int tot)
 {
-	int status;
-	int i;
-	int signal_num;
+	int	status;
+	int	i;
+	int	signal_num;
 
 	i = 0;
 	while (i < tot)
@@ -144,8 +100,7 @@ void	ft_wait_children(int tot)
 			signal_num = WTERMSIG(status);
 			if (signal_num == SIGQUIT)
 			{
-				printf("grandchild core dumped\n");
-				g_last_exit_status = 131;
+				(printf("grandchild core dumped\n"), g_last_exit_status = 131);
 			}
 			else if (signal_num == SIGINT)
 			{
