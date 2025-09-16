@@ -55,3 +55,42 @@ void	ft_parent_sigint_handler(int sig)
 	rl_replace_line("", 0);
 	g_last_exit_status = 130;
 }
+
+int	ft_redir_in(char *file)
+{
+	int	fd;
+
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		return (perror(file), 0);
+	if (dup2(fd, STDIN_FILENO) < 0)
+		return (perror("dup2 in"), 0);
+	close(fd);
+	return (1);
+}
+
+int	ft_redir_out(char *file)
+{
+	int	fd;
+
+	fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd < 0)
+		return (perror(file), 0);
+	if (dup2(fd, STDOUT_FILENO) < 0)
+		return (perror("dup2 out"), 0);
+	close(fd);
+	return (1);
+}
+
+int	ft_redir_append(char *file)
+{
+	int	fd;
+
+	fd = open(file, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	if (fd < 0)
+		return (perror(file), 0);
+	if (dup2(fd, STDOUT_FILENO) < 0)
+		return (perror("dup2 append"), 0);
+	close(fd);
+	return (1);
+}

@@ -20,11 +20,6 @@ void	ft_appropriate_child_signal(char *str)
 		ft_set_child_signals();
 }
 
-int	ft_is_interactive(void)
-{
-	return (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO));
-}
-
 void	ft_child_process(t_dat *d, char ***cmd, int **fd, size_t i)
 {
 	t_rdr	r;
@@ -100,7 +95,6 @@ void	ft_fork_children(t_dat *d, char ***cmd, int **fd)
 	size_t	i;
 
 	i = 0;
-	// Remove this line: ft_set_child_signals();
 	while (i < d->tot)
 	{
 		if (!cmd[i] || !cmd[i][0])
@@ -111,25 +105,11 @@ void	ft_fork_children(t_dat *d, char ***cmd, int **fd)
 		pid = fork();
 		if (pid == 0)
 		{
-			ft_set_child_signals(); // Move it here - only in child!
+			ft_set_child_signals();
 			ft_child_process(d, cmd, fd, i);
 		}
 		else if (pid < 0)
 			perror("fork");
-		i++;
-	}
-	// Keep parent signals as they were - don't call ft_set_main_signals() again
-}
-
-void	ft_close_pipes(int **fd, int tot)
-{
-	int	i;
-
-	i = 0;
-	while (i < tot - 1)
-	{
-		close(fd[i][0]);
-		close(fd[i][1]);
 		i++;
 	}
 }
@@ -147,111 +127,8 @@ void	ft_nested_child(t_dat *d, char **cmd, char *cmd_path, int s_stdin)
 	exit(1);
 }
 
-void	ft_nested_minishell(t_dat *d, char **cmd, char *cmd_path)
-{
-	pid_t	pid;
-	int		saved_stdin;
-
-	saved_stdin = dup(STDIN_FILENO);
-	if (saved_stdin < 0)
-	{
-		perror("dup");
-		return ;
-	}
-	ft_set_main_nested_signals();
-	pid = fork();
-	if (pid == 0)
-		ft_nested_child(d, cmd, cmd_path, saved_stdin);
-	else if (pid > 0)
-		ft_nested_parent(d, pid, saved_stdin);
-	else
-		perror("nesting minishell fork");
-	ft_set_main_signals();
-}
-
-void	ft_execute_pipeline(t_dat *d, char ***cmd)
-{
-	int	**fd;
-
-	if (ft_strcmp(cmd[0][0], "./minishell") == 0)
-	{
-		ft_nested_minishell(d, cmd[0], NULL);
-		return ;
-	}
-	fd = init_fd_array(d->tot);
-	if (!fd || !ft_create_pipes(fd, d->tot))
-	{
-		if (fd)
-			ft_free_fd(fd);
-		return ;
-	}
-	ft_fork_children(d, cmd, fd);
-	ft_close_pipes(fd, d->tot);
-	ft_wait_children(d, d->tot);
-	ft_set_main_signals();
-	ft_free_fd(fd);
-}
-
-int	ft_parse_redirection(char **tokens, t_rdr *r)
-{
-	int	i;
-
-	i = 0;
-	ft_memset(r, 0, sizeof(*r));
-	while (tokens[i])
-	{
-		if (!ft_strcmp(tokens[i], "<") && tokens[i + 1])
-			r->in_file = ft_strdup(tokens[++i]);
-		else if (!ft_strcmp(tokens[i], ">") && tokens[i + 1])
-			r->out_file = ft_strdup(tokens[++i]);
-		else if (!ft_strcmp(tokens[i], ">>") && tokens[i + 1])
-			r->append_file = ft_strdup(tokens[++i]);
-		else if (!ft_strcmp(tokens[i], "<<") && tokens[i + 1])
-			r->heredoc_delim = ft_strdup(tokens[++i]);
-		i++;
-	}
-	return (1);
-}
-
-int	ft_redir_in(char *file)
-{
-	int	fd;
-
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return (perror(file), 0);
-	if (dup2(fd, STDIN_FILENO) < 0)
-		return (perror("dup2 in"), 0);
-	close(fd);
-	return (1);
-}
-
-int	ft_redir_out(char *file)
-{
-	int	fd;
-
-	fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (fd < 0)
-		return (perror(file), 0);
-	if (dup2(fd, STDOUT_FILENO) < 0)
-		return (perror("dup2 out"), 0);
-	close(fd);
-	return (1);
-}
-
-int	ft_redir_append(char *file)
-{
-	int	fd;
-
-	fd = open(file, O_CREAT | O_WRONLY | O_APPEND, 0644);
-	if (fd < 0)
-		return (perror(file), 0);
-	if (dup2(fd, STDOUT_FILENO) < 0)
-		return (perror("dup2 append"), 0);
-	close(fd);
-	return (1);
-}
-
+// The  1st message here will occur in the case of a child
+// of a child (grandchild) terminating due to SIGQUIT
 void	ft_wait_children(t_dat *d, int tot)
 {
 	int status;
@@ -268,7 +145,7 @@ void	ft_wait_children(t_dat *d, int tot)
 			signal_num = WTERMSIG(status);
 			if (signal_num == SIGQUIT)
 			{
-				printf("APPEAR");
+				printf("grandchild core dumped\n");
 				g_last_exit_status = 131;
 			}
 			else if (signal_num == SIGINT)

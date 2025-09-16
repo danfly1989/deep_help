@@ -42,3 +42,16 @@ int	ft_create_pipes(int **fd, int tot)
 	}
 	return (1);
 }
+
+void	ft_close_pipes(int **fd, int tot)
+{
+	int	i;
+
+	i = 0;
+	while (i < tot - 1)
+	{
+		close(fd[i][0]);
+		close(fd[i][1]);
+		i++;
+	}
+}

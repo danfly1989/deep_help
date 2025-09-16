@@ -56,3 +56,23 @@ char	***ft_parse_cmd(t_dat *d, int st, int i, int idx)
 	return (cmd);
 }
 
+int	ft_parse_redirection(char **tokens, t_rdr *r)
+{
+	int	i;
+
+	i = 0;
+	ft_memset(r, 0, sizeof(*r));
+	while (tokens[i])
+	{
+		if (!ft_strcmp(tokens[i], "<") && tokens[i + 1])
+			r->in_file = ft_strdup(tokens[++i]);
+		else if (!ft_strcmp(tokens[i], ">") && tokens[i + 1])
+			r->out_file = ft_strdup(tokens[++i]);
+		else if (!ft_strcmp(tokens[i], ">>") && tokens[i + 1])
+			r->append_file = ft_strdup(tokens[++i]);
+		else if (!ft_strcmp(tokens[i], "<<") && tokens[i + 1])
+			r->heredoc_delim = ft_strdup(tokens[++i]);
+		i++;
+	}
+	return (1);
+}

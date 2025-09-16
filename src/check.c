@@ -35,7 +35,7 @@ int	ft_is_redirection(char *str)
 
 int	ft_is_number(const char *str)
 {
-	size_t i;
+	size_t	i;
 
 	if (str == NULL || *str == '\0')
 		return (0);
@@ -49,4 +49,9 @@ int	ft_is_number(const char *str)
 		i++;
 	}
 	return (1);
+}
+
+int	ft_is_interactive(void)
+{
+	return (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO));
 }
