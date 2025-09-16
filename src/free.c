@@ -1,0 +1,53 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: daflynn <daflynn@student.42berlin.de>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/16 11:06:42 by daflynn           #+#    #+#             */
+/*   Updated: 2025/09/16 11:06:49 by daflynn          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+void	ft_free_lines(t_dat *data)
+{
+	ft_free_string_array(data->ln);
+	data->ln = NULL;
+	ft_free_string_array(data->xln);
+	data->xln = NULL;
+}
+
+void	ft_free_string_array(char **str_array)
+{
+	int	i;
+
+	if (str_array == NULL)
+		return ;
+	i = 0;
+	while (str_array[i] != NULL)
+	{
+		free(str_array[i]);
+		str_array[i] = NULL;
+		i++;
+	}
+	free(str_array);
+}
+
+void	ft_free_list(t_va *head)
+{
+	t_va	*tmp;
+
+	while (head != NULL)
+	{
+		tmp = head;
+		head = head->next;
+		if (tmp->name)
+			free(tmp->name);
+		if (tmp->value)
+			free(tmp->value);
+		free(tmp);
+	}
+}

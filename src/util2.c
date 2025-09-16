@@ -97,25 +97,9 @@ char	*ft_extract_var_value(char *str, char quote, size_t len)
 	return (val);
 }
 
-void	ft_free_list(t_va *head)
-{
-	t_va	*tmp;
-
-	while (head != NULL)
-	{
-		tmp = head;
-		head = head->next;
-		if (tmp->name)
-			free(tmp->name);
-		if (tmp->value)
-			free(tmp->value);
-		free(tmp);
-	}
-}
-
 int	ft_strisspace(char *str)
 {
-	int i;
+	int	i;
 
 	if (!str)
 		return (0);
