@@ -12,16 +12,6 @@
 
 #include "minishell.h"
 
-void	ft_export_error(char *arg, char *message)
-{
-	write(2, "export: '", 9);
-	write(2, arg, ft_strlen(arg));
-	write(2, "': ", 3);
-	write(2, message, ft_strlen(message));
-	write(2, "\n", 1);
-	g_last_exit_status = 1;
-}
-
 void	ft_check_var_assign_and_expand_line_ext(t_dat *data, char *line)
 {
 	ft_strip_quotes_from_xln(data);

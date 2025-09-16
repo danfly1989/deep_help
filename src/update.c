@@ -29,29 +29,6 @@ int	ft_update_existing_var(t_va *node, const char *name, const char *val)
 	return (0);
 }
 
-void	ft_echo(char **arr, size_t k)
-{
-	int	i;
-	int	newline;
-
-	i = 1;
-	newline = 1;
-	while (arr[k + i] != NULL && ft_strncmp(arr[k + i], "-n", 2) == 0)
-	{
-		newline = 0;
-		i++;
-	}
-	while (arr[k + i] != NULL)
-	{
-		printf("%s", arr[k + i]);
-		i++;
-		if (arr[k + i] != NULL)
-			printf(" ");
-	}
-	if (newline)
-		printf("\n");
-}
-
 int	ft_var_name_only(char *str)
 {
 	size_t	i;

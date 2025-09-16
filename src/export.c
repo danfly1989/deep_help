@@ -73,18 +73,6 @@ void	ft_export_type1(t_va **head, char *s, char *name, char *val)
 		*head = new;
 }
 
-void	ft_print_export(t_va *head)
-{
-	t_va	*cur;
-
-	cur = head;
-	while (cur != NULL)
-	{
-		printf("declare -x %s=\"%s\"\n", cur->name, cur->value);
-		cur = cur->next;
-	}
-}
-
 void	ft_export_multi_var(t_dat *data, size_t k)
 {
 	char	*message;
@@ -110,4 +98,14 @@ void	ft_export_multi_var(t_dat *data, size_t k)
 			ft_export_error(data->xln[k + i], message);
 		i++;
 	}
+}
+
+void	ft_export_error(char *arg, char *message)
+{
+	write(2, "export: '", 9);
+	write(2, arg, ft_strlen(arg));
+	write(2, "': ", 3);
+	write(2, message, ft_strlen(message));
+	write(2, "\n", 1);
+	g_last_exit_status = 1;
 }
