@@ -32,3 +32,21 @@ int	ft_is_redirection(char *str)
 	return (!ft_strcmp(str, "<") || !ft_strcmp(str, ">") || !ft_strcmp(str,
 			">>") || !ft_strcmp(str, "<<"));
 }
+
+int	ft_is_number(const char *str)
+{
+	size_t i;
+
+	if (str == NULL || *str == '\0')
+		return (0);
+	i = 0;
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	while (str[i] != '\0')
+	{
+		if (ft_isdigit(str[i]) == 0)
+			return (0);
+		i++;
+	}
+	return (1);
+}

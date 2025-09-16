@@ -11,3 +11,16 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	ft_child_sigint_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		write(1, "\n", 1);
+		exit(130);
+	}
+	else if (sig == SIGQUIT)
+	{
+		exit(131);
+	}
+}
