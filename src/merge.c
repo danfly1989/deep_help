@@ -14,7 +14,7 @@
 
 t_va	*ft_merge_sorted_lists(t_va *a, t_va *b)
 {
-	t_va *result;
+	t_va	*result;
 
 	if (a == NULL)
 		return (b);
@@ -31,4 +31,26 @@ t_va	*ft_merge_sorted_lists(t_va *a, t_va *b)
 		result->next = ft_merge_sorted_lists(a, b->next);
 	}
 	return (result);
+}
+
+void	ft_append_env_var(t_dat *data, char *key, char *value)
+{
+	t_va *new;
+	t_va *cur;
+
+	new = malloc(sizeof(t_va));
+	if (!new)
+		return ;
+	new->name = ft_strdup(key);
+	new->value = ft_strdup(value);
+	new->next = NULL;
+	cur = data->ev;
+	if (!cur)
+	{
+		data->ev = new;
+		return ;
+	}
+	while (cur->next)
+		cur = cur->next;
+	cur->next = new;
 }

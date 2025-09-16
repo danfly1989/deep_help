@@ -12,28 +12,6 @@
 
 #include "minishell.h"
 
-void	ft_append_env_var(t_dat *data, char *key, char *value)
-{
-	t_va	*new;
-	t_va	*cur;
-
-	new = malloc(sizeof(t_va));
-	if (!new)
-		return ;
-	new->name = ft_strdup(key);
-	new->value = ft_strdup(value);
-	new->next = NULL;
-	cur = data->ev;
-	if (!cur)
-	{
-		data->ev = new;
-		return ;
-	}
-	while (cur->next)
-		cur = cur->next;
-	cur->next = new;
-}
-
 void	ft_export_type2(t_dat *data, char *str)
 {
 	char	*name;
@@ -104,5 +82,32 @@ void	ft_print_export(t_va *head)
 	{
 		printf("declare -x %s=\"%s\"\n", cur->name, cur->value);
 		cur = cur->next;
+	}
+}
+
+void	ft_export_multi_var(t_dat *data, size_t k)
+{
+	char	*message;
+	int		i;
+
+	message = "not a valid identifier";
+	if (data->xln[k + 1] == NULL)
+	{
+		ft_print_sorted_env(data->ev);
+		return ;
+	}
+	i = 1;
+	while (data->xln[k + i] != NULL)
+	{
+		if (ft_valid_var(data->xln[k + i]) == 1)
+		{
+			ft_export_type1(&data->ev, data->xln[k + i], NULL, NULL);
+			ft_add_local_var(data, data->xln[k + i]);
+		}
+		else if (ft_var_name_only(data->xln[k + i]) == 1)
+			ft_export_type2(data, data->xln[k + i]);
+		else
+			ft_export_error(data->xln[k + i], message);
+		i++;
 	}
 }

@@ -14,8 +14,8 @@
 
 int	ft_count_tokens(char *str)
 {
-	int i;
-	int count;
+	int	i;
+	int	count;
 
 	i = 0;
 	count = 0;
@@ -30,6 +30,22 @@ int	ft_count_tokens(char *str)
 			i = ft_skip_quote(str, i);
 		else
 			i = ft_skip_token(str, i);
+	}
+	return (count);
+}
+
+int	ft_count_list(t_va *head)
+{
+	t_va	*cur;
+	int		count;
+
+	cur = head;
+	count = 0;
+	while (cur)
+	{
+		if (cur->name)
+			count++;
+		cur = cur->next;
 	}
 	return (count);
 }

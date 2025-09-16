@@ -12,33 +12,6 @@
 
 #include "minishell.h"
 
-void	ft_export_multi_var(t_dat *data, size_t k)
-{
-	char	*message;
-	int		i;
-
-	message = "not a valid identifier";
-	if (data->xln[k + 1] == NULL)
-	{
-		ft_print_sorted_env(data->ev);
-		return ;
-	}
-	i = 1;
-	while (data->xln[k + i] != NULL)
-	{
-		if (ft_valid_var(data->xln[k + i]) == 1)
-		{
-			ft_export_type1(&data->ev, data->xln[k + i], NULL, NULL);
-			ft_add_local_var(data, data->xln[k + i]);
-		}
-		else if (ft_var_name_only(data->xln[k + i]) == 1)
-			ft_export_type2(data, data->xln[k + i]);
-		else
-			ft_export_error(data->xln[k + i], message);
-		i++;
-	}
-}
-
 int	ft_handle_builtin(t_dat *data, size_t k)
 {
 	if (data == NULL || data->xln == NULL)
@@ -60,61 +33,6 @@ int	ft_handle_builtin(t_dat *data, size_t k)
 	else
 		return (0);
 	return (1);
-}
-
-void	ft_check_var_assign_and_expand_line_ext(t_dat *data, char *line)
-{
-	ft_strip_quotes_from_xln(data);
-	ft_external_functions(data, line);
-	if (data->qtypes)
-	{
-		free(data->qtypes);
-		data->qtypes = NULL;
-	}
-	ft_free_string_array(data->ln);
-	data->ln = NULL;
-	ft_free_string_array(data->xln);
-	data->xln = NULL;
-}
-
-void	ft_check_var_assign_and_expand_line(t_dat *data, char *line)
-{
-	if (!data || !line)
-		return ;
-	data->qtypes = NULL;
-	data->ln = ft_tokenize_line(data, line, &data->qtypes);
-	if (!data->ln)
-	{
-		if (data->qtypes)
-			free(data->qtypes);
-		return ;
-	}
-	data->xln = ft_expand_tokens(data, data->ln, data->qtypes, 0);
-	if (!data->xln)
-	{
-		if (data->qtypes)
-			free(data->qtypes);
-		ft_free_string_array(data->ln);
-		data->ln = NULL;
-		return ;
-	}
-	ft_check_var_assign_and_expand_line_ext(data, line);
-}
-
-int	ft_count_list(t_va *head)
-{
-	t_va	*cur;
-	int		count;
-
-	cur = head;
-	count = 0;
-	while (cur)
-	{
-		if (cur->name)
-			count++;
-		cur = cur->next;
-	}
-	return (count);
 }
 
 void	ft_list_to_env_array(t_dat *data)
