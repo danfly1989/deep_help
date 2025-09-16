@@ -50,48 +50,41 @@ void	ft_export_error(char *arg, char *message)
 	g_last_exit_status = 1;
 }
 
-void	ft_exec_command(t_dat *d, char **cmd)
+void	ft_check_var_assign_and_expand_line_ext(t_dat *data, char *line)
 {
-	char	*cmd_path;
-
-	if (!cmd || !cmd[0])
-		exit(127);
-	if (ft_is_pipe_builtin(cmd[0]))
+	ft_strip_quotes_from_xln(data);
+	ft_external_functions(data, line);
+	if (data->qtypes)
 	{
-		ft_execute_builtin_in_child(d, cmd);
-		exit(g_last_exit_status);
+		free(data->qtypes);
+		data->qtypes = NULL;
 	}
-	cmd_path = ft_get_cmd_path(d, cmd[0], 0);
-	if (!cmd_path)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd[0], 2);
-		ft_putendl_fd(": command not found", 2);
-		exit(127);
-	}
-	execve(cmd_path, cmd, d->evs);
-	free(cmd_path);
-	perror("execve");
-	exit(1);
+	ft_free_string_array(data->ln);
+	data->ln = NULL;
+	ft_free_string_array(data->xln);
+	data->xln = NULL;
 }
 
-char	*ft_expand_exit_status(t_dat *d, char *token)
+void	ft_check_var_assign_and_expand_line(t_dat *data, char *line)
 {
-	char	*res;
-	int		i;
-
-	(void)d;
-	i = 0;
-	res = malloc(1);
-	if (!res)
-		return (NULL);
-	res[0] = '\0';
-	while (token[i])
+	if (!data || !line)
+		return ;
+	data->qtypes = NULL;
+	data->ln = ft_tokenize_line(data, line, &data->qtypes);
+	if (!data->ln)
 	{
-		if (token[i] == '$' && token[i + 1] == '?')
-			res = append_exit_status(res, g_last_exit_status, &i);
-		else
-			res = append_char(res, token, &i);
+		if (data->qtypes)
+			free(data->qtypes);
+		return ;
 	}
-	return (res);
+	data->xln = ft_expand_tokens(data, data->ln, data->qtypes, 0);
+	if (!data->xln)
+	{
+		if (data->qtypes)
+			free(data->qtypes);
+		ft_free_string_array(data->ln);
+		data->ln = NULL;
+		return ;
+	}
+	ft_check_var_assign_and_expand_line_ext(data, line);
 }

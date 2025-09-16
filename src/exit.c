@@ -50,3 +50,24 @@ void	ft_exit(t_dat *data, size_t k)
 	status = ft_atoi(data->xln[k + 1]);
 	ft_cleanup_exit(data, status % 256);
 }
+
+char	*ft_expand_exit_status(t_dat *d, char *token)
+{
+	char	*res;
+	int		i;
+
+	(void)d;
+	i = 0;
+	res = malloc(1);
+	if (!res)
+		return (NULL);
+	res[0] = '\0';
+	while (token[i])
+	{
+		if (token[i] == '$' && token[i + 1] == '?')
+			res = append_exit_status(res, g_last_exit_status, &i);
+		else
+			res = append_char(res, token, &i);
+	}
+	return (res);
+}

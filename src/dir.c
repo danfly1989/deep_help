@@ -19,9 +19,8 @@ void	ft_change_directory(t_dat *data, size_t k)
 
 	if (data->xln[k + 1] != NULL && data->xln[k + 2] != NULL)
 	{
-		write(2, "minishell: cd: too many arguments\n", 34);
-		g_last_exit_status = 1;
-		return ;
+		(write(2, "minishell: cd: too many arguments\n", 34));
+		return (g_last_exit_status, (void)0);
 	}
 	oldpwd = getcwd(NULL, 0);
 	if (data->xln[k + 1] == NULL || ft_strcmp(data->xln[k + 1], "~") == 0)
@@ -38,10 +37,7 @@ void	ft_change_directory(t_dat *data, size_t k)
 	if (chdir(path) == 0)
 		ft_update_directories(data, oldpwd);
 	else
-	{
-		ft_cd_error(path);
-		g_last_exit_status = 1;
-	}
+		(ft_cd_error(path), g_last_exit_status = 1);
 }
 
 void	ft_pwd(void)
