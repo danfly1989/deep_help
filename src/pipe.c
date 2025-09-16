@@ -55,3 +55,10 @@ void	ft_close_pipes(int **fd, int tot)
 		i++;
 	}
 }
+
+int	ft_check_pipe(char **tokens, int i)
+{
+	if (i == 0 || !tokens[i + 1] || ft_is_redirection(tokens[i + 1]))
+		return (ft_syntax_error(tokens[i + 1]));
+	return (1);
+}

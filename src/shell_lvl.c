@@ -61,8 +61,8 @@ int	ft_create_shlvl(t_va **env_list)
 
 void	ft_nested_minishell(t_dat *d, char **cmd, char *cmd_path)
 {
-	pid_t pid;
-	int saved_stdin;
+	pid_t	pid;
+	int		saved_stdin;
 
 	saved_stdin = dup(STDIN_FILENO);
 	if (saved_stdin < 0)

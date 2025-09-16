@@ -20,13 +20,6 @@ int	ft_check_redir(char **tokens, int i)
 	return (1);
 }
 
-int	ft_check_pipe(char **tokens, int i)
-{
-	if (i == 0 || !tokens[i + 1] || ft_is_redirection(tokens[i + 1]))
-		return (ft_syntax_error(tokens[i + 1]));
-	return (1);
-}
-
 int	ft_is_redirection(char *str)
 {
 	return (!ft_strcmp(str, "<") || !ft_strcmp(str, ">") || !ft_strcmp(str,
