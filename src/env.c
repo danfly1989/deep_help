@@ -23,3 +23,29 @@ void	ft_env(t_dat *data)
 		cur = cur->next;
 	}
 }
+
+void	ft_create_env_variable(t_dat *d, const char *name, const char *value)
+{
+	t_va	*new_node;
+
+	new_node = malloc(sizeof(t_va));
+	if (!new_node)
+		return (perror("minishell: malloc error"));
+	new_node->name = ft_strdup(name);
+	new_node->value = ft_strdup(value);
+	new_node->next = d->ev;
+	d->ev = new_node;
+	if (!new_node->name || !new_node->value)
+	{
+		free(new_node->name);
+		free(new_node->value);
+		free(new_node);
+		perror("minishell: malloc error");
+	}
+}
+
+void	ft_update_env_variable(t_dat *d, const char *name, const char *value)
+{
+	if (!ft_update_existing_var(d->ev, name, value))
+		ft_create_env_variable(d, name, value);
+}

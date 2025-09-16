@@ -29,32 +29,6 @@ int	ft_update_existing_var(t_va *node, const char *name, const char *val)
 	return (0);
 }
 
-void	ft_create_env_variable(t_dat *d, const char *name, const char *value)
-{
-	t_va	*new_node;
-
-	new_node = malloc(sizeof(t_va));
-	if (!new_node)
-		return (perror("minishell: malloc error"));
-	new_node->name = ft_strdup(name);
-	new_node->value = ft_strdup(value);
-	new_node->next = d->ev;
-	d->ev = new_node;
-	if (!new_node->name || !new_node->value)
-	{
-		free(new_node->name);
-		free(new_node->value);
-		free(new_node);
-		perror("minishell: malloc error");
-	}
-}
-
-void	ft_update_env_variable(t_dat *d, const char *name, const char *value)
-{
-	if (!ft_update_existing_var(d->ev, name, value))
-		ft_create_env_variable(d, name, value);
-}
-
 void	ft_echo(char **arr, size_t k)
 {
 	int	i;
@@ -169,67 +143,6 @@ void	ft_sort_list_by_name(t_va **head_ref)
 	ft_sort_list_by_name(&a);
 	ft_sort_list_by_name(&b);
 	*head_ref = ft_merge_sorted_lists(a, b);
-}
-
-t_va	*ft_duplicate_node(const t_va *node)
-{
-	t_va	*new;
-
-	new = malloc(sizeof(t_va));
-	if (new == NULL)
-		return (NULL);
-	new->name = ft_strdup(node->name);
-	new->value = ft_strdup(node->value);
-	new->next = NULL;
-	if (new->name == NULL || new->value == NULL)
-	{
-		free(new->name);
-		free(new->value);
-		free(new);
-		return (NULL);
-	}
-	return (new);
-}
-
-int	ft_append_dup_node(const t_va *cur, t_va **head, t_va **tail)
-{
-	t_va	*new_node;
-
-	new_node = ft_duplicate_node(cur);
-	if (new_node == NULL)
-	{
-		ft_free_list(*head);
-		return (0);
-	}
-	if (*tail == NULL)
-	{
-		*head = new_node;
-		*tail = new_node;
-	}
-	else
-	{
-		(*tail)->next = new_node;
-		*tail = new_node;
-	}
-	return (1);
-}
-
-t_va	*ft_duplicate_list(const t_va *head)
-{
-	const t_va	*cur;
-	t_va		*new_head;
-	t_va		*new_tail;
-
-	cur = head;
-	new_head = NULL;
-	new_tail = NULL;
-	while (cur != NULL)
-	{
-		if (!ft_append_dup_node(cur, &new_head, &new_tail))
-			return (NULL);
-		cur = cur->next;
-	}
-	return (new_head);
 }
 
 void	ft_print_sorted_env(t_va *head)
