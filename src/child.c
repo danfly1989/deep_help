@@ -251,3 +251,34 @@ int	ft_redir_append(char *file)
 	close(fd);
 	return (1);
 }
+
+void	ft_wait_children(t_dat *d, int tot)
+{
+	int status;
+	int i;
+	int signal_num;
+
+	(void)d;
+	i = 0;
+	while (i < tot)
+	{
+		waitpid(-1, &status, 0);
+		if (WIFSIGNALED(status))
+		{
+			signal_num = WTERMSIG(status);
+			if (signal_num == SIGQUIT)
+			{
+				printf("APPEAR");
+				g_last_exit_status = 131;
+			}
+			else if (signal_num == SIGINT)
+			{
+				write(1, "\n", 1);
+				g_last_exit_status = 130;
+			}
+		}
+		else if (WIFEXITED(status))
+			g_last_exit_status = WEXITSTATUS(status);
+		i++;
+	}
+}

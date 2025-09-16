@@ -32,20 +32,20 @@ extern volatile sig_atomic_t	g_last_exit_status;
 
 typedef struct s_dat
 {
-	struct s_variable_node *av; // argv
-	struct s_variable_node *ev; // env
-	struct s_variable_node *lo; // local variable
-	char **ln;                  // splitted line
-	char **xln;                 // expanded splitted line
-	char *tmp1;                 // temorary storage 1
-	char *tmp2;                 // temorary storage 2
-	size_t i;                   // iterator
-	size_t j;                   // iterator
-	size_t k;                   // iterator
-	size_t tot;                 // iterator
-	size_t st;                  // start for built-in functions
-	char **avs;                 // args for external function executions
-	char **evs;                 // envs for external function executions
+	struct s_variable_node		*av;
+	struct s_variable_node		*ev;
+	struct s_variable_node		*lo;
+	char						**ln;
+	char						**xln;
+	char						*tmp1;
+	char						*tmp2;
+	size_t						i;
+	size_t						j;
+	size_t						k;
+	size_t						tot;
+	size_t						st;
+	char						**avs;
+	char						**evs;
 	int							no_pipes;
 	int							*qtypes;
 }								t_dat;
