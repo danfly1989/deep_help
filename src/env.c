@@ -49,3 +49,13 @@ void	ft_update_env_variable(t_dat *d, const char *name, const char *value)
 	if (!ft_update_existing_var(d->ev, name, value))
 		ft_create_env_variable(d, name, value);
 }
+
+void	ft_print_sorted_env(t_va *head)
+{
+	t_va	*sorted;
+
+	sorted = ft_duplicate_list(head);
+	ft_sort_list_by_name(&sorted);
+	ft_print_export(sorted);
+	ft_free_list(sorted);
+}
