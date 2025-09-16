@@ -24,39 +24,6 @@ int	ft_skip_token(char *str, int i)
 	return (i);
 }
 
-int	ft_get_token_end(char *str, int i)
-{
-	if (str[i] == '\'' || str[i] == '"')
-		return (ft_skip_quote(str, i));
-	return (ft_skip_token(str, i));
-}
-
-char	*ft_extract_token(char *str, t_dat *d, int *quote_type)
-{
-	int		start;
-	int		end;
-	char	*token;
-
-	start = d->i;
-	*quote_type = 0;
-	end = ft_get_token_end(str, d->i);
-	d->i = end;
-	token = ft_strndup(str + start, end - start);
-	if (!token)
-		return (NULL);
-	ft_detect_quote_type(token, quote_type);
-	return (token);
-}
-
-char	**ft_free_token_quote(char **tokens, int *quote_types)
-{
-	if (tokens)
-		free(tokens);
-	if (quote_types)
-		free(quote_types);
-	return (NULL);
-}
-
 char	**ft_tokenize_line(t_dat *d, char *str, int **quote_types_out)
 {
 	char	**tokens;
@@ -94,23 +61,6 @@ char	*ft_get_var_value(t_va *list, const char *name)
 		list = list->next;
 	}
 	return (NULL);
-}
-
-char	*ft_extract_var_key(const char *str, size_t *i)
-{
-	size_t	start;
-	char	*key;
-
-	start = *i;
-	if (str[*i] == '?')
-	{
-		(*i)++;
-		return (ft_strdup("?"));
-	}
-	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
-		(*i)++;
-	key = ft_substr(str, start, *i - start);
-	return (key);
 }
 
 char	*ft_strjoin_char(const char *s, char c)
@@ -209,22 +159,4 @@ char	**ft_expand_tokens(t_dat *d, char **tokens, int *qtypes, int i)
 	}
 	expanded[i] = NULL;
 	return (expanded);
-}
-
-char	*ft_get_val_from_list(t_va *head, const char *key)
-{
-	t_va *cur;
-	size_t len;
-
-	if (!head || !key)
-		return (NULL);
-	len = ft_strlen(key);
-	cur = head;
-	while (cur)
-	{
-		if (ft_strncmp(cur->name, key, len + 1) == 0)
-			return (cur->value);
-		cur = cur->next;
-	}
-	return (NULL);
 }

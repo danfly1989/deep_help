@@ -75,3 +75,12 @@ void	ft_free_redirection(t_rdr *r)
 		r->heredoc_delim = NULL;
 	}
 }
+
+char	**ft_free_token_quote(char **tokens, int *quote_types)
+{
+	if (tokens)
+		free(tokens);
+	if (quote_types)
+		free(quote_types);
+	return (NULL);
+}
