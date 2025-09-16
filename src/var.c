@@ -73,30 +73,6 @@ int	ft_add_local_var(t_dat *data, char *str)
 	return (1);
 }
 
-void	ft_update_local_variables(t_dat *d)
-{
-	int		i;
-	char	*name;
-	t_va	*node;
-
-	if (!d || !d->xln)
-		return ;
-	i = 0;
-	while (d->xln[i])
-	{
-		name = ft_extract_var_name(d->xln[i]);
-		if (!name)
-			return ;
-		node = ft_find_var(d->lo, name);
-		if (node)
-			ft_update_var_value(node, ft_strchr(d->xln[i], '=') + 1);
-		else
-			ft_add_local_var(d, d->xln[i]);
-		free(name);
-		i++;
-	}
-}
-
 int	ft_all_valid_lvar(t_dat *data, char **arr)
 {
 	int	i;

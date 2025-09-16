@@ -24,3 +24,11 @@ void	ft_child_sigint_handler(int sig)
 		exit(131);
 	}
 }
+
+void	ft_nested_sigint_handler(int sig)
+{
+	(void)sig;
+	rl_replace_line("", 0);
+	rl_redisplay();
+	g_last_exit_status = 130;
+}

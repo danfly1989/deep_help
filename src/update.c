@@ -52,45 +52,6 @@ void	ft_echo(char **arr, size_t k)
 		printf("\n");
 }
 
-void	ft_unset_multi_var(t_dat *d, size_t k)
-{
-	int	i;
-
-	i = 1;
-	while (d->xln[k + i] != NULL)
-	{
-		d->ev = ft_remove_variable_node(d->xln[k + i], d->ev, NULL);
-		d->lo = ft_remove_variable_node(d->xln[k + i], d->lo, NULL);
-		i++;
-	}
-}
-
-t_va	*ft_remove_variable_node(const char *key, t_va *head, t_va *prev)
-{
-	t_va	*cur;
-	t_va	*next;
-
-	cur = head;
-	while (cur != NULL)
-	{
-		if (ft_strncmp(cur->name, key, ft_strlen(key)) == 0)
-		{
-			next = cur->next;
-			free(cur->name);
-			free(cur->value);
-			free(cur);
-			if (prev == NULL)
-				head = next;
-			else
-				prev->next = next;
-			break ;
-		}
-		prev = cur;
-		cur = cur->next;
-	}
-	return (head);
-}
-
 int	ft_var_name_only(char *str)
 {
 	size_t	i;
@@ -107,4 +68,28 @@ int	ft_var_name_only(char *str)
 		i++;
 	}
 	return (1);
+}
+
+void	ft_update_local_variables(t_dat *d)
+{
+	int		i;
+	char	*name;
+	t_va	*node;
+
+	if (!d || !d->xln)
+		return ;
+	i = 0;
+	while (d->xln[i])
+	{
+		name = ft_extract_var_name(d->xln[i]);
+		if (!name)
+			return ;
+		node = ft_find_var(d->lo, name);
+		if (node)
+			ft_update_var_value(node, ft_strchr(d->xln[i], '=') + 1);
+		else
+			ft_add_local_var(d, d->xln[i]);
+		free(name);
+		i++;
+	}
 }

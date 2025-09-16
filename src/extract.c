@@ -73,8 +73,8 @@ char	*ft_get_val_from_list(t_va *head, const char *key)
 
 char	**ft_extract_tokens(t_dat *data, int start, int end)
 {
-	char **tokens;
-	int i;
+	char	**tokens;
+	int		i;
 
 	tokens = malloc((end - start + 1) * sizeof(char *));
 	if (!tokens)

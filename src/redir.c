@@ -39,14 +39,6 @@ int	ft_apply_redirections(t_rdr *r, char **tokens)
 	return (ft_remove_redirections(&tokens, 0, 0));
 }
 
-void	ft_nested_sigint_handler(int sig)
-{
-	(void)sig;
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_last_exit_status = 130;
-}
-
 void	ft_parent_sigint_handler(int sig)
 {
 	(void)sig;
