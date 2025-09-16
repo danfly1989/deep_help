@@ -129,13 +129,12 @@ void	ft_nested_child(t_dat *d, char **cmd, char *cmd_path, int s_stdin)
 
 // The  1st message here will occur in the case of a child
 // of a child (grandchild) terminating due to SIGQUIT
-void	ft_wait_children(t_dat *d, int tot)
+void	ft_wait_children(int tot)
 {
 	int status;
 	int i;
 	int signal_num;
 
-	(void)d;
 	i = 0;
 	while (i < tot)
 	{
