@@ -6,7 +6,7 @@
 /*   By: dagwu <dagwu@student.42berlin.de>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 18:48:53 by dagwu             #+#    #+#             */
-/*   Updated: 2025/09/08 19:28:00 by daflynn          ###   ########.fr       */
+/*   Updated: 2025/09/16 13:33:53 by daflynn          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,6 @@ char							*ft_get_cmd_path(t_dat *d, const char *cmd,
 int								ft_count_pipes(char **tokens);
 void							ft_cmd_not_found(char *cmd);
 void							ft_get_exit_stat(t_dat *d, pid_t pid);
-// void	ft_ex_single_cmd(t_dat *d, char *cmd_path);
 void							ft_external_functions(t_dat *data, char *line);
 char							**ft_extract_tokens(t_dat *data, int start,
 									int end);
@@ -194,7 +193,6 @@ int								ft_parse_redirection(char **tokens, t_rdr *r);
 int								ft_redir_in(char *file);
 int								ft_redir_out(char *file);
 int								ft_redir_append(char *file);
-// int		ft_handle_heredoc(char *delim, char *line);
 int								ft_apply_sing_redirections(t_rdr *r,
 									char **tok);
 int								ft_apply_redirections(t_rdr *r, char **tokens);
@@ -208,14 +206,12 @@ int								ft_syntax_error(char *token);
 int								ft_check_redir(char **tokens, int i);
 int								ft_check_pipe(char **tokens, int i);
 int								ft_validate_syntax(char **tokens);
-/////////////////////////////////////////////////
 char							*ft_expand_exit_status(t_dat *d, char *token);
 char							*append_char(char *res, char *token, int *i);
 char							*append_exit_status(char *res, int status,
 									int *i);
 char							*ft_strjoin_free(char *s1, char *s2);
 
-////////////////////////////////////////////////
 void							ft_set_heredoc_signals(void);
 void							ft_set_child_signals(void);
 void							ft_set_main_signals(void);
@@ -225,13 +221,11 @@ void							ft_parent_sigint_handler(int sig);
 void							ft_set_no_pipe_child_signals(t_dat *d);
 void							ft_set_main_nested_signals(void);
 void							ft_nested_sigint_handler(int sig);
-///////////////////////////////////////////////
 int								ft_is_builtin(char *cmd);
 void							ft_execute_builtin_in_child(t_dat *d,
 									char **cmd);
 void							*ft_free_error_expanded(char **expanded, int i);
 char							*ft_get_cmd_path_nested(const char *cmd);
-//////////////////////////////////////////////////////
 void							ft_heredoc_sigint_handler(int sig);
 int								ft_strncmp(const char *s1, const char *s2,
 									size_t n);
@@ -249,13 +243,12 @@ void							ft_ex_single_cmd_child(t_dat *d, char *cmd_path,
 									int saved_stdin);
 void							ft_nullify_pointers(t_dat *data);
 void							ft_free_lines(t_dat *data);
-void							ft_check_var_assign_and_expand_line_ext(t_dat *data,
+void							ft_check_var_assign_and_expand_line_ext(
+									t_dat *data,
 									char *line);
 void							ft_cmd_error(t_dat *data, char *line);
-///////////////////////////////////////////////////////////////////
 int								ft_is_interactive(void);
 void							ft_appropriate_child_signal(char *str);
-////////////////////////////////////////////////////////////////
 void							ft_nested_minishell(t_dat *d, char **cmd,
 									char *cmd_path);
 void							ft_nested_child(t_dat *d, char **cmd,
