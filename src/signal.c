@@ -19,9 +19,8 @@ void	ft_child_sigint_handler(int sig)
 		write(1, "\n", 1);
 		exit(130);
 	}
-	else if (sig == SIGQUIT) // Add the missing condition!
+	else if (sig == SIGQUIT)
 	{
-		// Don't use readline functions in child signal handlers
 		exit(131);
 	}
 }
