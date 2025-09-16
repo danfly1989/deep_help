@@ -66,3 +66,25 @@ char	*ft_join_path(char *str1, char *cmd)
 	temp = NULL;
 	return (full_path);
 }
+
+char	*ft_strjoin_free(char *s1, char *s2)
+{
+	char	*joined;
+
+	if (!s1 || !s2)
+		return (NULL);
+	joined = ft_strjoin(s1, s2);
+	free(s1);
+	return (joined);
+}
+
+char	*append_char(char *res, char *token, int *i)
+{
+	char	*temp;
+
+	temp = ft_substr(token, *i, 1);
+	res = ft_strjoin_free(res, temp);
+	free(temp);
+	(*i)++;
+	return (res);
+}
