@@ -55,43 +55,6 @@ void	ft_update_env_variable(t_dat *d, const char *name, const char *value)
 		ft_create_env_variable(d, name, value);
 }
 
-void	ft_pwd(void)
-{
-	char	*cwd;
-
-	cwd = getcwd(NULL, 0);
-	if (cwd == NULL)
-	{
-		perror("pwd error");
-		return ;
-	}
-	printf("%s\n", cwd);
-	free(cwd);
-}
-
-void	ft_update_directories(t_dat *data, char *oldpwd)
-{
-	char	*newpwd;
-
-	newpwd = getcwd(NULL, 0);
-	ft_update_env_variable(data, "OLDPWD", oldpwd);
-	ft_update_env_variable(data, "PWD", newpwd);
-	free(oldpwd);
-	free(newpwd);
-}
-
-void	ft_cd_error(char *path)
-{
-	char	*msg;
-
-	msg = strerror(errno);
-	write(2, "minishell: cd: ", 15);
-	write(2, path, ft_strlen(path));
-	write(2, ": ", 2);
-	write(2, msg, ft_strlen(msg));
-	write(2, "\n", 1);
-}
-
 void	ft_echo(char **arr, size_t k)
 {
 	int	i;
