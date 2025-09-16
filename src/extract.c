@@ -55,8 +55,8 @@ char	*ft_extract_var_key(const char *str, size_t *i)
 
 char	*ft_get_val_from_list(t_va *head, const char *key)
 {
-	t_va *cur;
-	size_t len;
+	t_va	*cur;
+	size_t	len;
 
 	if (!head || !key)
 		return (NULL);
@@ -69,4 +69,28 @@ char	*ft_get_val_from_list(t_va *head, const char *key)
 		cur = cur->next;
 	}
 	return (NULL);
+}
+
+char	**ft_extract_tokens(t_dat *data, int start, int end)
+{
+	char **tokens;
+	int i;
+
+	tokens = malloc((end - start + 1) * sizeof(char *));
+	if (!tokens)
+		return (NULL);
+	i = 0;
+	while (start < end)
+	{
+		tokens[i] = ft_strdup(data->xln[start]);
+		if (!tokens[i])
+		{
+			ft_free_string_array(tokens);
+			return (NULL);
+		}
+		start++;
+		i++;
+	}
+	tokens[i] = NULL;
+	return (tokens);
 }

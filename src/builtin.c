@@ -87,30 +87,6 @@ void	ft_external_functions(t_dat *data, char *line)
 	data->evs = NULL;
 }
 
-char	**ft_extract_tokens(t_dat *data, int start, int end)
-{
-	char	**tokens;
-	int		i;
-
-	tokens = malloc((end - start + 1) * sizeof(char *));
-	if (!tokens)
-		return (NULL);
-	i = 0;
-	while (start < end)
-	{
-		tokens[i] = ft_strdup(data->xln[start]);
-		if (!tokens[i])
-		{
-			ft_free_string_array(tokens);
-			return (NULL);
-		}
-		start++;
-		i++;
-	}
-	tokens[i] = NULL;
-	return (tokens);
-}
-
 char	***ft_clean_cmd(char ***cmd)
 {
 	int	i;
@@ -125,50 +101,6 @@ char	***ft_clean_cmd(char ***cmd)
 	}
 	free(cmd);
 	return (NULL);
-}
-
-int	ft_parse_cmd_helper(t_dat *d, char ***cmd, int *idx, int *st_i)
-{
-	int	i;
-
-	i = st_i[1];
-	if (i < st_i[0])
-		return (0);
-	if (!ft_validate_segment(d->xln, st_i[0], i))
-		return (0);
-	cmd[*idx] = ft_extract_tokens(d, st_i[0], i);
-	if (!cmd[*idx])
-		return (0);
-	(*idx)++;
-	st_i[0] = i + 1;
-	return (1);
-}
-
-char	***ft_parse_cmd(t_dat *d, int st, int i, int idx)
-{
-	char	***cmd;
-	int		st_i[2];
-
-	d->k = ft_count_pipes(d->xln) + 1;
-	cmd = ft_calloc(d->k + 1, sizeof(char **));
-	if (!cmd)
-		return (NULL);
-	st_i[0] = st;
-	while (1)
-	{
-		st_i[1] = i;
-		if (!d->xln[i] || !ft_strcmp(d->xln[i], "|"))
-		{
-			if (!ft_parse_cmd_helper(d, cmd, &idx, st_i))
-				return (ft_clean_cmd(cmd));
-			if (!d->xln[i])
-				break ;
-		}
-		i++;
-	}
-	cmd[idx] = NULL;
-	d->tot = idx;
-	return (cmd);
 }
 
 void	ft_free_fd(int **fd)
