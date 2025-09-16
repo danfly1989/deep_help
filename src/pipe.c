@@ -22,3 +22,23 @@ int	ft_is_pipe_builtin(char *cmd)
 		return (1);
 	return (0);
 }
+
+int	ft_create_pipes(int **fd, int tot)
+{
+	int	i;
+
+	i = 0;
+	while (i < tot - 1)
+	{
+		if (pipe(fd[i]) == -1)
+		{
+			perror("pipe");
+			while (i-- > 0)
+				free(fd[i]);
+			free(fd);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}

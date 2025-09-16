@@ -12,58 +12,6 @@
 
 #include "minishell.h"
 
-t_dat	ft_duplicate_input_args(int argc, char **argv, char **env)
-{
-	t_dat	data;
-
-	(void)argc;
-	data.av = NULL;
-	data.ev = NULL;
-	data.lo = NULL;
-	data.ln = NULL;
-	data.xln = NULL;
-	data.tmp1 = NULL;
-	data.tmp2 = NULL;
-	data.i = 0;
-	data.j = 0;
-	data.k = 0;
-	data.tot = 0;
-	data.st = 0;
-	data.no_pipes = 0;
-	data.avs = NULL;
-	data.evs = NULL;
-	data.qtypes = NULL;
-	data.av = create_lst_frm_arr(argv + 1, NULL, 0, ft_create_node);
-	data.ev = create_lst_frm_arr(env, NULL, 0, ft_create_var_node);
-	ft_increment_shlvl(&data.ev);
-	return (data);
-}
-
-void	ft_cleanup_data(t_dat *data)
-{
-	if (data->ev)
-		ft_free_list(data->ev);
-	if (data->av)
-		ft_free_list(data->av);
-	if (data->lo)
-		ft_free_list(data->lo);
-	if (data->ln)
-		ft_free_string_array(data->ln);
-	if (data->xln)
-		ft_free_string_array(data->xln);
-	if (data->tmp1)
-		free(data->tmp1);
-	if (data->tmp2)
-		free(data->tmp2);
-	if (data->qtypes)
-		free(data->qtypes);
-	if (data->evs)
-		ft_free_string_array(data->evs);
-	if (data->avs)
-		ft_free_string_array(data->avs);
-	ft_nullify_pointers(data);
-}
-
 void	ft_nullify_pointers(t_dat *data)
 {
 	data->ev = NULL;
@@ -76,13 +24,6 @@ void	ft_nullify_pointers(t_dat *data)
 	data->qtypes = NULL;
 	data->evs = NULL;
 	data->avs = NULL;
-}
-
-void	ft_cleanup_exit(t_dat *data, int flag)
-{
-	ft_cleanup_data(data);
-	rl_clear_history();
-	exit(flag);
 }
 
 t_va	*create_lst_frm_arr(char **arr, t_va *h, int i, t_va *(*f)(char *))
@@ -117,4 +58,37 @@ void	ft_reset_iterators(t_dat *data)
 	data->k = 0;
 	data->tot = 0;
 	data->st = 0;
+}
+
+void	ft_setup_io(int **fd, size_t i, size_t total)
+{
+	if (i > 0)
+		dup2(fd[i - 1][0], STDIN_FILENO);
+	if (i < total - 1)
+		dup2(fd[i][1], STDOUT_FILENO);
+}
+
+int	**init_fd_array(int tot)
+{
+	int	**fd;
+	int	i;
+
+	fd = malloc(sizeof(int *) * tot);
+	if (!fd)
+		return (NULL);
+	i = 0;
+	while (i < tot - 1)
+	{
+		fd[i] = malloc(sizeof(int) * 2);
+		if (!fd[i])
+		{
+			while (--i >= 0)
+				free(fd[i]);
+			free(fd);
+			return (NULL);
+		}
+		i++;
+	}
+	fd[tot - 1] = NULL;
+	return (fd);
 }

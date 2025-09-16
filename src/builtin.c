@@ -35,31 +35,6 @@ int	ft_handle_builtin(t_dat *data, size_t k)
 	return (1);
 }
 
-void	ft_list_to_env_array(t_dat *data)
-{
-	int		i;
-	int		count;
-	t_va	*cur;
-
-	i = 0;
-	data->tmp1 = NULL;
-	count = ft_count_list(data->ev);
-	data->evs = malloc((count + 1) * sizeof(char *));
-	if (!data->evs)
-		return ;
-	cur = data->ev;
-	while (cur && i < count)
-	{
-		data->tmp1 = ft_strjoin(cur->name, "=");
-		data->evs[i] = ft_strjoin(data->tmp1, cur->value);
-		free(data->tmp1);
-		data->tmp1 = NULL;
-		cur = cur->next;
-		i++;
-	}
-	data->evs[i] = NULL;
-}
-
 void	ft_external_functions(t_dat *data, char *line)
 {
 	char	***cmd;
@@ -87,22 +62,6 @@ void	ft_external_functions(t_dat *data, char *line)
 	data->evs = NULL;
 }
 
-char	***ft_clean_cmd(char ***cmd)
-{
-	int	i;
-
-	if (!cmd)
-		return (NULL);
-	i = 0;
-	while (cmd[i])
-	{
-		ft_free_string_array(cmd[i]);
-		i++;
-	}
-	free(cmd);
-	return (NULL);
-}
-
 void	ft_free_fd(int **fd)
 {
 	int	i;
@@ -116,59 +75,6 @@ void	ft_free_fd(int **fd)
 		i++;
 	}
 	free(fd);
-}
-
-int	**init_fd_array(int tot)
-{
-	int	**fd;
-	int	i;
-
-	fd = malloc(sizeof(int *) * tot);
-	if (!fd)
-		return (NULL);
-	i = 0;
-	while (i < tot - 1)
-	{
-		fd[i] = malloc(sizeof(int) * 2);
-		if (!fd[i])
-		{
-			while (--i >= 0)
-				free(fd[i]);
-			free(fd);
-			return (NULL);
-		}
-		i++;
-	}
-	fd[tot - 1] = NULL;
-	return (fd);
-}
-
-int	ft_create_pipes(int **fd, int tot)
-{
-	int	i;
-
-	i = 0;
-	while (i < tot - 1)
-	{
-		if (pipe(fd[i]) == -1)
-		{
-			perror("pipe");
-			while (i-- > 0)
-				free(fd[i]);
-			free(fd);
-			return (0);
-		}
-		i++;
-	}
-	return (1);
-}
-
-void	ft_setup_io(int **fd, size_t i, size_t total)
-{
-	if (i > 0)
-		dup2(fd[i - 1][0], STDIN_FILENO);
-	if (i < total - 1)
-		dup2(fd[i][1], STDOUT_FILENO);
 }
 
 int	ft_is_builtin(char *cmd)

@@ -47,3 +47,28 @@ void	ft_sort_list_by_name(t_va **head_ref)
 	ft_sort_list_by_name(&b);
 	*head_ref = ft_merge_sorted_lists(a, b);
 }
+
+void	ft_list_to_env_array(t_dat *data)
+{
+	int i;
+	int count;
+	t_va *cur;
+
+	i = 0;
+	data->tmp1 = NULL;
+	count = ft_count_list(data->ev);
+	data->evs = malloc((count + 1) * sizeof(char *));
+	if (!data->evs)
+		return ;
+	cur = data->ev;
+	while (cur && i < count)
+	{
+		data->tmp1 = ft_strjoin(cur->name, "=");
+		data->evs[i] = ft_strjoin(data->tmp1, cur->value);
+		free(data->tmp1);
+		data->tmp1 = NULL;
+		cur = cur->next;
+		i++;
+	}
+	data->evs[i] = NULL;
+}
