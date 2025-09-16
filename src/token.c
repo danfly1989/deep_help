@@ -12,18 +12,6 @@
 
 #include "minishell.h"
 
-int	ft_skip_quote(char *str, int i)
-{
-	char	quote;
-
-	quote = str[i++];
-	while (str[i] && str[i] != quote)
-		i++;
-	if (str[i])
-		i++;
-	return (i);
-}
-
 int	ft_skip_token(char *str, int i)
 {
 	while (str[i] && str[i] != ' ')
@@ -36,56 +24,11 @@ int	ft_skip_token(char *str, int i)
 	return (i);
 }
 
-int	ft_count_tokens(char *str)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (str[i])
-	{
-		while (str[i] == ' ')
-			i++;
-		if (!str[i])
-			break ;
-		count++;
-		if (str[i] == '\'' || str[i] == '"')
-			i = ft_skip_quote(str, i);
-		else
-			i = ft_skip_token(str, i);
-	}
-	return (count);
-}
-
 int	ft_get_token_end(char *str, int i)
 {
 	if (str[i] == '\'' || str[i] == '"')
 		return (ft_skip_quote(str, i));
 	return (ft_skip_token(str, i));
-}
-
-void	ft_detect_quote_type(char *token, int *quote_type)
-{
-	char	*eq;
-	char	quote;
-
-	if (token[0] == '\'')
-		*quote_type = 1;
-	else if (token[0] == '"')
-		*quote_type = 2;
-	else
-	{
-		eq = ft_strchr(token, '=');
-		if (eq && (*(eq + 1) == '\'' || *(eq + 1) == '"'))
-		{
-			quote = *(eq + 1);
-			if (quote == '\'')
-				*quote_type = 1;
-			else
-				*quote_type = 2;
-		}
-	}
 }
 
 char	*ft_extract_token(char *str, t_dat *d, int *quote_type)
@@ -103,15 +46,6 @@ char	*ft_extract_token(char *str, t_dat *d, int *quote_type)
 		return (NULL);
 	ft_detect_quote_type(token, quote_type);
 	return (token);
-}
-
-void	ft_reset_iterators(t_dat *data)
-{
-	data->i = 0;
-	data->j = 0;
-	data->k = 0;
-	data->tot = 0;
-	data->st = 0;
 }
 
 char	**ft_free_token_quote(char **tokens, int *quote_types)
@@ -275,72 +209,6 @@ char	**ft_expand_tokens(t_dat *d, char **tokens, int *qtypes, int i)
 	}
 	expanded[i] = NULL;
 	return (expanded);
-}
-
-void	ft_strip_surrounding_quotes(char *s)
-{
-	size_t	len;
-	size_t	j;
-
-	len = ft_strlen(s);
-	if (len >= 2 && ((s[0] == '"' && s[len - 1] != '"') || (s[0] == '\''
-				&& s[len - 1] != '\'')))
-		return ;
-	if (len >= 2 && ((s[0] == '"' && s[len - 1] == '"') || (s[0] == '\''
-				&& s[len - 1] == '\'')))
-	{
-		j = 1;
-		while (j < len - 1)
-		{
-			s[j - 1] = s[j];
-			j++;
-		}
-		s[j - 1] = '\0';
-	}
-}
-
-void	ft_strip_quotes_after_equal(char *s)
-{
-	char	*eq;
-	char	quote;
-	size_t	j;
-	size_t	len;
-
-	eq = ft_strchr(s, '=');
-	len = ft_strlen(s);
-	if (eq && ((eq[1] == '"' && s[len - 1] != '"') || (eq[1] == '\'' && s[len
-				- 1] != '\'')))
-		return ;
-	if (eq && ((eq[1] == '"' && s[len - 1] == '"') || (eq[1] == '\'' && s[len
-				- 1] == '\'')))
-	{
-		quote = eq[1];
-		j = 0;
-		while (eq[2 + j] && eq[2 + j] != quote)
-		{
-			eq[1 + j] = eq[2 + j];
-			j++;
-		}
-		eq[1 + j] = '\0';
-	}
-}
-
-void	ft_strip_quotes_from_xln(t_dat *d)
-{
-	size_t	i;
-
-	i = 0;
-	if (!d || !d->xln)
-		return ;
-	while (d->xln[i])
-	{
-		if (d->xln[i])
-		{
-			ft_strip_surrounding_quotes(d->xln[i]);
-			ft_strip_quotes_after_equal(d->xln[i]);
-		}
-		i++;
-	}
 }
 
 char	*ft_get_val_from_list(t_va *head, const char *key)

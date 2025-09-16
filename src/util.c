@@ -109,3 +109,12 @@ t_va	*create_lst_frm_arr(char **arr, t_va *h, int i, t_va *(*f)(char *))
 	}
 	return (h);
 }
+
+void	ft_reset_iterators(t_dat *data)
+{
+	data->i = 0;
+	data->j = 0;
+	data->k = 0;
+	data->tot = 0;
+	data->st = 0;
+}
